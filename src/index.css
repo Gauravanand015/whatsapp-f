@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.signUp_Button {
+  @apply w-full flex justify-center bg-green_1 text-gray-100 p-4 rounded-full tracking-wide font-semibold focus:outline-none hover:bg-green_2 shadow-lg cursor-pointer transition ease-in duration-300;
+}
+
+/* @layer components {
+  .link_tag {
+    @apply flex flex-col items-center justify-center mt-10   text-center text-md dark:text-dark_text_1;
+  }
+} */
