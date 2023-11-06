@@ -6,8 +6,37 @@
   @apply w-full flex justify-center bg-green_1 text-gray-100 p-4 rounded-full tracking-wide font-semibold focus:outline-none hover:bg-green_2 shadow-lg cursor-pointer transition ease-in duration-300;
 }
 
-/* @layer components {
-  .link_tag {
-    @apply flex flex-col items-center justify-center mt-10   text-center text-md dark:text-dark_text_1;
+@layer components {
+  .container {
+    @apply w-[1700px] h-full;
   }
-} */
+  .btn {
+    @apply w-[40px] h-[40px] rounded-full flex items-center justify-center active:bg-dark_hover_1;
+  }
+  .textPrimary {
+    font-size: 16px;
+    line-height: 21px;
+    @apply text-dark_text_1;
+  }
+  .textSecondary {
+    font-size: 14px;
+    line-height: 19px;
+    @apply text-dark_text_2;
+  }
+
+  .input {
+    @apply w-full dark:bg-dark_bg_2 p-1.5 dark:text-dark_text_1 rounded-lg flex-1 outline-none;
+  }
+}
+
+/* Animation */
+
+.rotateAnimation {
+  animation: rotate 0.3s forwards;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(-90deg);
+  }
+}
