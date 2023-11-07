@@ -7,22 +7,25 @@ const initialState = {
   error: "",
   conversation: [],
   activeConversation: {},
-  notification: [],
+  notifications: [],
 };
 
 export const getConversation = createAsyncThunk(
   "conversation/all",
   async (token, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get(`${CONVERSATION_ENDPOINT}`, {
+      const { data } = await axios.get(CONVERSATION_ENDPOINT, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       return data;
     } catch (error) {
-      console.log(error);
-      rejectWithValue(error.response.data.error.message);
+      if (error.response) {
+        return rejectWithValue(error.response.data.error.message);
+      } else {
+        return rejectWithValue("Network error occurred.");
+      }
     }
   }
 );

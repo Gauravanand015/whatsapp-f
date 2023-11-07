@@ -36,7 +36,6 @@ export const loginUser = createAsyncThunk(
       const { data } = await axios.post(`${AUTH_ENDPOINT}/login`, {
         ...values,
       });
-      console.log(data);
       return data;
     } catch (error) {
       return rejectWithValue(error.response.data.error.message);
