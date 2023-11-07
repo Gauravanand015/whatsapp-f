@@ -3,9 +3,12 @@ import CommunityIcon from "../../../svg/Community";
 import StoryIcon from "../../../svg/Story";
 import ChatIcon from "../../../svg/Chat";
 import DotsIcon from "../../../svg/Dots";
+import { useState } from "react";
+import Menu from "./Menu";
 
 export default function SidebarHeader() {
   const { user } = useSelector((state) => state.user);
+  const [showMenu, setShowMenu] = useState(false);
   return (
     <div className="h-[50px] dark:bg-dark_bg_2 flex items-center p16">
       {/* container */}
@@ -35,10 +38,16 @@ export default function SidebarHeader() {
               <ChatIcon className="dark:fill-dark_svg_1" />
             </button>
           </li>
-          <li>
-            <button className="btn">
+          <li
+            className="relative"
+            onClick={() => {
+              setShowMenu((prev) => !prev);
+            }}
+          >
+            <button className={`btn ${showMenu ? "bg-dark_hover_1" : ""}`}>
               <DotsIcon className="dark:fill-dark_svg_1" />
             </button>
+            {showMenu ? <Menu /> : null}
           </li>
         </ul>
       </div>
