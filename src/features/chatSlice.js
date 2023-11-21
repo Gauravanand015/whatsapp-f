@@ -30,6 +30,31 @@ export const getConversation = createAsyncThunk(
   }
 );
 
+export const open_create_conversation = createAsyncThunk(
+  "conversation/open_create",
+  async (values, { rejectWithValue }) => {
+    const { token, receiverId } = values;
+    try {
+      const { data } = await axios.post(
+        CONVERSATION_ENDPOINT,
+        { receiverId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return data;
+    } catch (error) {
+      if (error.response) {
+        return rejectWithValue(error.response.data.error.message);
+      } else {
+        return rejectWithValue("Network error occurred.");
+      }
+    }
+  }
+);
+
 const chatSlice = createSlice({
   name: "chat",
   initialState,
@@ -51,6 +76,17 @@ const chatSlice = createSlice({
         state.conversation = action.payload;
       })
       .addCase(getConversation.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      .addCase(open_create_conversation.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(open_create_conversation.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.activeConversation = action.payload;
+      })
+      .addCase(open_create_conversation.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });

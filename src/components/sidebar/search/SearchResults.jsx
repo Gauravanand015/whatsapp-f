@@ -12,7 +12,7 @@ function SearchResults({ searchResults }) {
         <ul>
           {searchResults &&
             searchResults.map((user) => (
-              <Contacts contacts={user} key={user._id} />
+              <Contacts contact={user} key={user._id} />
             ))}
         </ul>
       </div>

@@ -12,6 +12,7 @@ const saveUserOnlyFilter = createFilter("user", ["user"]);
 const persistConfig = {
   key: "root", // Change the key to "root" to persist both user and chat slices
   storage,
+  whitelist: ["user"],
   transforms: [saveUserOnlyFilter],
 };
 
