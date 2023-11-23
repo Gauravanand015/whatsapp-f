@@ -1,6 +1,6 @@
 import Contacts from "./Contacts";
 
-function SearchResults({ searchResults }) {
+function SearchResults({ searchResults, setSearchResults }) {
   return (
     <div className="w-full convos scrollbar">
       <div>
@@ -12,7 +12,11 @@ function SearchResults({ searchResults }) {
         <ul>
           {searchResults &&
             searchResults.map((user) => (
-              <Contacts contact={user} key={user._id} />
+              <Contacts
+                contact={user}
+                key={user._id}
+                setSearchResults={setSearchResults}
+              />
             ))}
         </ul>
       </div>
