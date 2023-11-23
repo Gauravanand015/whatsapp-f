@@ -1,12 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 const CONVERSATION_ENDPOINT = `${process.env.REACT_APP_AUTH_LINK}/conversation`;
+const MESSAGE_ENDPOINT = `${process.env.REACT_APP_AUTH_LINK}/messages`;
 
 const initialState = {
   status: "",
   error: "",
   conversation: [],
   activeConversation: {},
+  messages: [],
   notifications: [],
 };
 
@@ -38,6 +40,56 @@ export const open_create_conversation = createAsyncThunk(
       const { data } = await axios.post(
         CONVERSATION_ENDPOINT,
         { receiverId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return data;
+    } catch (error) {
+      if (error.response) {
+        return rejectWithValue(error.response.data.error.message);
+      } else {
+        return rejectWithValue("Network error occurred.");
+      }
+    }
+  }
+);
+
+export const getConversationMessages = createAsyncThunk(
+  "conversation/messages",
+  async (values, { rejectWithValue }) => {
+    const { token, convo_id } = values;
+    try {
+      const { data } = await axios.get(`${MESSAGE_ENDPOINT}/${convo_id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return data;
+    } catch (error) {
+      if (error.response) {
+        return rejectWithValue(error.response.data.error.message);
+      } else {
+        return rejectWithValue("Network error occurred.");
+      }
+    }
+  }
+);
+
+export const sendMessages = createAsyncThunk(
+  "message/send",
+  async (values, { rejectWithValue }) => {
+    const { token, message, convo_id, files } = values;
+    try {
+      const { data } = await axios.post(
+        `${MESSAGE_ENDPOINT}`,
+        {
+          message,
+          convo_id,
+          files,
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -87,6 +139,39 @@ const chatSlice = createSlice({
         state.activeConversation = action.payload;
       })
       .addCase(open_create_conversation.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      .addCase(getConversationMessages.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(getConversationMessages.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.messages = action.payload;
+      })
+      .addCase(getConversationMessages.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      .addCase(sendMessages.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(sendMessages.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.messages = [...state.messages, action.payload];
+        let conversation = {
+          ...action.payload.conversation,
+          latestMessage: action.payload,
+        };
+
+        let newConvos = [...state.conversation].filter(
+          (con) => con._id !== conversation._id
+        );
+
+        newConvos.unshift(conversation);
+        state.conversation = newConvos;
+      })
+      .addCase(sendMessages.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });
