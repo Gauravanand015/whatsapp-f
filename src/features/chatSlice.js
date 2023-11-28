@@ -6,7 +6,7 @@ const MESSAGE_ENDPOINT = `${process.env.REACT_APP_AUTH_LINK}/messages`;
 const initialState = {
   status: "",
   error: "",
-  conversation: [],
+  conversations: [],
   activeConversation: {},
   messages: [],
   notifications: [],
@@ -117,6 +117,25 @@ const chatSlice = createSlice({
     changeStatus: (state, action) => {
       state.status = action.payload;
     },
+    updateMessage: (state, action) => {
+      console.log("Update message:", action.payload);
+      let convo = state.activeConversation;
+      if (convo._id === action.payload.conversation._id) {
+        state.messages = [...state.messages, action.payload];
+      }
+
+      let conversation = {
+        ...action.payload.conversation,
+        latestMessage: action.payload,
+      };
+
+      let newConvos = [...state.conversations].filter(
+        (con) => con._id !== conversation._id
+      );
+
+      newConvos.unshift(conversation);
+      state.conversations = newConvos;
+    },
   },
   extraReducers(builder) {
     builder
@@ -125,7 +144,7 @@ const chatSlice = createSlice({
       })
       .addCase(getConversation.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.conversation = action.payload;
+        state.conversations = action.payload;
       })
       .addCase(getConversation.rejected, (state, action) => {
         state.status = "failed";
@@ -163,13 +182,12 @@ const chatSlice = createSlice({
           ...action.payload.conversation,
           latestMessage: action.payload,
         };
-
-        let newConvos = [...state.conversation].filter(
-          (con) => con._id !== conversation._id
+        let newConvos = [...state.conversations].filter(
+          (c) => c._id !== conversation._id
         );
-
         newConvos.unshift(conversation);
-        state.conversation = newConvos;
+        state.conversations = newConvos;
+        state.files = [];
       })
       .addCase(sendMessages.rejected, (state, action) => {
         state.status = "failed";
@@ -178,5 +196,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const { setActiveConversation } = chatSlice.actions;
+export const { setActiveConversation, updateMessage } = chatSlice.actions;
 export const chatReducer = chatSlice.reducer;

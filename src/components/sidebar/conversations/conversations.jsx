@@ -9,7 +9,7 @@ import {
 import { Capitalize } from "../../../utils/string.js";
 import SocketContext from "../../../context/Socket.context.js";
 
-const Conversations = ({ conversation, socket }) => {
+const Conversations = ({ conversation, socket, check }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const { token } = user;
@@ -43,7 +43,11 @@ const Conversations = ({ conversation, socket }) => {
         {/* left */}
         <div className="flex items-center gap-x-3">
           {/* conversation user picture */}
-          <div className="relative min-w-[50px] max-w-[50px] h-[50px] rounded-full overflow-hidden">
+          <div
+            className={`relative min-w-[50px] max-w-[50px] h-[50px] rounded-full overflow-hidden ${
+              check ? "online" : ""
+            }`}
+          >
             <img
               src={getConversationPicture(user, conversation.users)}
               alt="pic"

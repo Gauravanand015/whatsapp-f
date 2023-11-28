@@ -16,13 +16,15 @@ function ChatMessages() {
       {/* container */}
       <div className="scrollbar overflow_scrollbar overflow-auto py-2 px-[6%]">
         {/* messages */}
-        {messages.map((message) => (
-          <Message
-            message={message}
-            key={message._id}
-            me={user._id === message.sender._id}
-          />
-        ))}
+        {console.log("Messages here:", messages)}
+        {messages &&
+          messages.map((message) => (
+            <Message
+              message={message}
+              key={message._id}
+              me={user._id === message.sender._id}
+            />
+          ))}
         <div ref={endRef}></div>
       </div>
     </div>

@@ -1,10 +1,12 @@
 import { useSelector } from "react-redux";
 import { DotsIcon, SearchLargeIcon } from "../../../svg";
 import { Capitalize } from "../../../utils/string";
+import { checkOnlineUsers } from "../../../utils/chat";
 
-function MessageHeader() {
+function MessageHeader({ onlineUser }) {
   const { activeConversation } = useSelector((state) => state.chat);
   const { name, picture } = activeConversation;
+  const { user } = useSelector((state) => state.user);
   return (
     <div className="h-[59px] dark:bg-dark_bg_2 flex items-center p16 select-none">
       {/* container */}
@@ -24,7 +26,11 @@ function MessageHeader() {
             <h1 className="dark:text-white text-md font-bold">
               {Capitalize(name.split(" ")[0])}
             </h1>
-            <span className="text-xs dark:text-dark_svg_2">Online</span>
+            <span className="text-xs dark:text-dark_svg_2">
+              {checkOnlineUsers(onlineUser, user, activeConversation.users)
+                ? "online"
+                : ""}
+            </span>
           </div>
         </div>
 
