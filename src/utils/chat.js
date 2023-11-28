@@ -7,3 +7,10 @@ export const getConversationName = (user, users) => {
 export const getConversationPicture = (user, users) => {
   return users[0]._id === user._id ? users[1].picture : users[0].picture;
 };
+
+export const checkOnlineUsers = (onlineUsers, user, users) => {
+  let convo_Id = getConversationId(user, users);
+  let check = onlineUsers.find((user) => user.userId === convo_Id);
+
+  return check ? true : false;
+};

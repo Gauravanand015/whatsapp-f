@@ -13,6 +13,7 @@ function Contacts({ contact, setSearchResults, socket }) {
   };
   const openConversation = async () => {
     const { payload } = await dispatch(open_create_conversation(values));
+    setSearchResults([]);
     socket.emit("join conversation", payload._id);
   };
   return (
