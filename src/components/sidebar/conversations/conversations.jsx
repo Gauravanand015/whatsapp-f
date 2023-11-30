@@ -9,7 +9,8 @@ import {
 import { Capitalize } from "../../../utils/string.js";
 import SocketContext from "../../../context/Socket.context.js";
 
-const Conversations = ({ conversation, socket, check }) => {
+const Conversations = ({ conversation, socket, check, typing }) => {
+  console.log(typing);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const { token } = user;
@@ -63,14 +64,18 @@ const Conversations = ({ conversation, socket, check }) => {
             <div>
               <div className="flex items-center gap-x-1 dark:text-dark_text_2">
                 <div className="flex-1 items-center gap-x-1 dark:text-dark_text_2">
-                  <p>
-                    {conversation.latestMessage?.message.length > 25
-                      ? `${conversation.latestMessage?.message.substring(
-                          0,
-                          25
-                        )}...`
-                      : conversation.latestMessage?.message}
-                  </p>
+                  {typing === conversation._id ? (
+                    <p className="text-green_1 font-bold">Typing...</p>
+                  ) : (
+                    <p>
+                      {conversation.latestMessage?.message.length > 25
+                        ? `${conversation.latestMessage?.message.substring(
+                            0,
+                            25
+                          )}...`
+                        : conversation.latestMessage?.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
