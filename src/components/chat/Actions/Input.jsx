@@ -1,23 +1,27 @@
-export default function Input({ message, setMessage, textRef, socket }) {
-  // const { activeConversation } = useSelector((state) => state.chat);
+import { useSelector } from "react-redux";
+import SocketContext from "../../../context/Socket.context";
+import { useState } from "react";
 
-  // const [typing, setTyping] = useState(false);
+function Input({ message, setMessage, textRef, socket }) {
+  const { activeConversation } = useSelector((state) => state.chat);
+
+  const [typing, setTyping] = useState(false);
   const onChangeHandler = (e) => {
     setMessage(e.target.value);
-    // if (!typing) {
-    //   setTyping(true);
-    //   socket.emit("typing", activeConversation._id);
-    // }
-    // let lastTypingTime = new Date().getTime();
-    // let timer = 1000;
-    // setTimeout(() => {
-    //   let timeNow = new Date().getTime();
-    //   let timeDiff = timeNow - lastTypingTime;
-    //   if (timeDiff >= timer && typing) {
-    //     socket.emit("stop typing", activeConversation._id);
-    //     setTyping(false);
-    //   }
-    // }, timer);
+    if (!typing) {
+      setTyping(true);
+      socket.emit("typing", activeConversation._id);
+    }
+    let lastTypingTime = new Date().getTime();
+    let timer = 1000;
+    setTimeout(() => {
+      let timeNow = new Date().getTime();
+      let timeDiff = timeNow - lastTypingTime;
+      if (timeDiff >= timer && typing) {
+        socket.emit("stop typing", activeConversation._id);
+        setTyping(false);
+      }
+    }, timer);
   };
   return (
     <div className="w-full">
@@ -33,9 +37,9 @@ export default function Input({ message, setMessage, textRef, socket }) {
   );
 }
 
-// const InputWithSocket = (props) => (
-//   <SocketContext.Consumer>
-//     {(socket) => <Input {...props} socket={socket} />}
-//   </SocketContext.Consumer>
-// );
-// export default InputWithSocket;
+const InputWithSocket = (props) => (
+  <SocketContext.Consumer>
+    {(socket) => <Input {...props} socket={socket} />}
+  </SocketContext.Consumer>
+);
+export default InputWithSocket;

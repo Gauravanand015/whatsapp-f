@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getConversationMessages } from "../../features/chatSlice";
 import ChatActions from "./Actions/ChatActions";
 
-function MessageHistoryContainer({ onlineUser }) {
+function MessageHistoryContainer({ onlineUser, typing }) {
   const disPatch = useDispatch();
   const { activeConversation, messages } = useSelector((state) => state.chat);
   const { user } = useSelector((state) => state.user);
@@ -27,7 +27,7 @@ function MessageHistoryContainer({ onlineUser }) {
         {/* chatHeader */}
         <MessageHeader onlineUser={onlineUser} />
         {/* chat messages */}
-        <ChatMessages />
+        <ChatMessages typing={typing} />
         {/* Chat Actions */}
         <ChatActions />
       </div>

@@ -12,34 +12,41 @@ const Home = ({ socket }) => {
   const { user } = useSelector((state) => state.user);
   const { activeConversation } = useSelector((state) => state.chat);
   const [onlineUser, setOnlineUser] = useState([]);
+  const [typing, setTyping] = useState(false);
 
-  //!join user into the socket.io
   useEffect(() => {
+    //!join user into the socket.io
     socket.emit("join", user._id);
   }, [user]);
 
-  //!get conversation
   useEffect(() => {
+    //!get conversation
     if (user?.token) {
       dispatch(getConversation(user.token));
     }
   }, [user, dispatch]);
 
-  //! online users
   useEffect(() => {
+    //! online users
     socket.on("get-online-user", (onlineUsers) => {
       setOnlineUser(onlineUsers);
     });
   }, [user]);
 
-  //!listening to receive messages
   useEffect(() => {
+    //!listening to receive messages
     const receiveMessageHandler = (message) => {
-      console.log("Received message in component:", message);
       dispatch(updateMessage(message));
     };
-
     socket.on("receive message", receiveMessageHandler);
+
+    socket.on("typing", (conversation) => {
+      setTyping(conversation);
+    });
+
+    socket.on("stop typing", () => {
+      setTyping(false);
+    });
 
     return () => {
       // Cleanup: Remove the event listener when the component unmounts
@@ -51,9 +58,9 @@ const Home = ({ socket }) => {
     <div className="h-screen dark:bg-dark_bg_1 flex items-center justify-center overflow-hidden">
       <div className="container flex h-screen py-[19px]">
         {/* sidebar */}
-        <Sidebar onlineUser={onlineUser} />
+        <Sidebar onlineUser={onlineUser} typing={typing} />
         {activeConversation._id ? (
-          <MessageHistoryContainer onlineUser={onlineUser} />
+          <MessageHistoryContainer onlineUser={onlineUser} typing={typing} />
         ) : (
           <WhatsappHome />
         )}

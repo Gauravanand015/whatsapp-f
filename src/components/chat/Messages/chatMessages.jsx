@@ -1,10 +1,11 @@
 import { useSelector } from "react-redux";
 import Message from "./Message";
 import { useEffect, useRef } from "react";
+import Typing from "./typing";
 
-function ChatMessages() {
+function ChatMessages({ typing }) {
   const { user } = useSelector((state) => state.user);
-  const { messages } = useSelector((state) => state.chat);
+  const { messages, activeConversation } = useSelector((state) => state.chat);
   const endRef = useRef();
 
   useEffect(() => {
@@ -16,7 +17,7 @@ function ChatMessages() {
       {/* container */}
       <div className="scrollbar overflow_scrollbar overflow-auto py-2 px-[6%]">
         {/* messages */}
-        {console.log("Messages here:", messages)}
+        {/* {console.log("Messages here:", messages)} */}
         {messages &&
           messages.map((message) => (
             <Message
@@ -25,6 +26,7 @@ function ChatMessages() {
               me={user._id === message.sender._id}
             />
           ))}
+        {typing === activeConversation._id ? <Typing /> : null}
         <div ref={endRef}></div>
       </div>
     </div>

@@ -5,7 +5,7 @@ import Search from "./search/search";
 import Conversation from "./conversations/conversation";
 import SearchResults from "./search/SearchResults";
 
-const Sidebar = ({ onlineUser }) => {
+const Sidebar = ({ onlineUser, typing }) => {
   const [searchResults, setSearchResults] = useState([]);
   return (
     <div className="flex0030 max-w-[30%] h-full select-none">
@@ -23,7 +23,7 @@ const Sidebar = ({ onlineUser }) => {
           />
         </>
       ) : (
-        <Conversation onlineUser={onlineUser} />
+        <Conversation onlineUser={onlineUser} typing={typing} />
       )}
     </div>
   );
