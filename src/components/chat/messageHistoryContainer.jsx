@@ -1,13 +1,14 @@
-import React, { useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 import MessageHeader from "./MessageHeader/messageHeader";
 import ChatMessages from "./Messages/chatMessages";
 import { useDispatch, useSelector } from "react-redux";
 import { getConversationMessages } from "../../features/chatSlice";
 import ChatActions from "./Actions/ChatActions";
+import FilePreview from "./Preview/Files/FilePreview";
 
 function MessageHistoryContainer({ onlineUser, typing }) {
   const disPatch = useDispatch();
-  const { activeConversation, messages } = useSelector((state) => state.chat);
+  const { activeConversation, files } = useSelector((state) => state.chat);
   const { user } = useSelector((state) => state.user);
   const { token } = user;
   const values = {
@@ -26,10 +27,15 @@ function MessageHistoryContainer({ onlineUser, typing }) {
       <div>
         {/* chatHeader */}
         <MessageHeader onlineUser={onlineUser} />
-        {/* chat messages */}
-        <ChatMessages typing={typing} />
-        {/* Chat Actions */}
-        <ChatActions />
+
+        {files.length > 0 ? (
+          <FilePreview />
+        ) : (
+          <>
+            <ChatMessages typing={typing} />
+            <ChatActions />
+          </>
+        )}
       </div>
     </div>
   );

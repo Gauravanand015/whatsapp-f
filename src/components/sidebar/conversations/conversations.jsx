@@ -10,7 +10,7 @@ import { Capitalize } from "../../../utils/string.js";
 import SocketContext from "../../../context/Socket.context.js";
 
 const Conversations = ({ conversation, socket, check, typing }) => {
-  console.log(typing);
+  // console.log(typing);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const { token } = user;
