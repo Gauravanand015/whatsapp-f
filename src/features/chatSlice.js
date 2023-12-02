@@ -10,6 +10,7 @@ const initialState = {
   activeConversation: {},
   messages: [],
   notifications: [],
+  files: [],
 };
 
 export const getConversation = createAsyncThunk(
@@ -136,6 +137,9 @@ const chatSlice = createSlice({
       newConvos.unshift(conversation);
       state.conversations = newConvos;
     },
+    addFiles: (state, action) => {
+      state.files = [...state.files, action.payload];
+    },
   },
   extraReducers(builder) {
     builder
@@ -156,6 +160,7 @@ const chatSlice = createSlice({
       .addCase(open_create_conversation.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.activeConversation = action.payload;
+        state.files = [];
       })
       .addCase(open_create_conversation.rejected, (state, action) => {
         state.status = "failed";
@@ -196,5 +201,6 @@ const chatSlice = createSlice({
   },
 });
 
-export const { setActiveConversation, updateMessage } = chatSlice.actions;
+export const { setActiveConversation, updateMessage, addFiles } =
+  chatSlice.actions;
 export const chatReducer = chatSlice.reducer;
