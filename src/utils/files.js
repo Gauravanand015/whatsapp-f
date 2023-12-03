@@ -1,5 +1,5 @@
-export const getFileType = (memType) => {
-  switch (memType) {
+export const getFileType = (mimeType) => {
+  switch (mimeType) {
     case "text/plain":
       return "txt";
     case "application/pdf":

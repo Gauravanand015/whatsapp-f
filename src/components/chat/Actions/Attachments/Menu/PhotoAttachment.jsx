@@ -32,7 +32,7 @@ const PhotoAttachment = () => {
           disPatch(
             addFiles({
               file: file,
-              imageDate: event.target.result,
+              fileData: event.target.result,
               type: getFileType(file.type),
             })
           );
