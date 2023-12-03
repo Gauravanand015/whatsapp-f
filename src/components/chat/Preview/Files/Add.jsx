@@ -1,16 +1,22 @@
 import { useRef } from "react";
-import { DocumentIcon } from "../../../../../svg";
+import { CloseIcon } from "../../../../svg";
 import { useDispatch } from "react-redux";
-import { addFiles } from "../../../../../features/chatSlice";
-import { getFileType } from "../../../../../utils/files";
+import { addFiles } from "../../../../features/chatSlice";
+import { getFileType } from "../../../../utils/files";
 
-export default function DocumentAttachment() {
+const Add = () => {
+  const inputRef = useRef(null);
   const dispatch = useDispatch();
-  const inputRef = useRef();
-  const documentHandler = (e) => {
-    let files = Array.from(e.target.files);
+  const filesHandler = (event) => {
+    let files = Array.from(event.target.files);
     files.forEach((file) => {
       if (
+        file.type !== "image/png" &&
+        file.type !== "image/gif" &&
+        file.type !== "image/jpeg" &&
+        file.type !== "image/jpg" &&
+        file.type !== "video/mp4" &&
+        file.type !== "video/webm" &&
         file.type !== "application/pdf" &&
         file.type !== "text/plain" &&
         file.type !== "application/msword" &&
@@ -28,7 +34,6 @@ export default function DocumentAttachment() {
         file.type !== "audio/wav"
       ) {
         files = files.filter((item) => item.name !== file.name);
-        console.log(file.type);
         return;
       } else if (file.size > 1024 * 1024 * 3) {
         files = files.filter((item) => item.name !== file.name);
@@ -40,6 +45,8 @@ export default function DocumentAttachment() {
           dispatch(
             addFiles({
               file: file,
+              fileData:
+                getFileType(file.type) === "image" ? e.target.result : "",
               type: getFileType(file.type),
             })
           );
@@ -48,22 +55,25 @@ export default function DocumentAttachment() {
     });
   };
   return (
-    <li>
-      <button
-        type="button"
-        className="bg-[#5F66CD] rounded-full"
+    <>
+      <div
         onClick={() => inputRef.current.click()}
+        className="w-14 h-14 mt-2 border dark:border-white rounded-md flex items-center justify-center cursor-pointer"
       >
-        <DocumentIcon />
-      </button>
+        <span className="rotate-45">
+          <CloseIcon className="dark:fill-dark_svg_1" />
+        </span>
+      </div>
       <input
         type="file"
         hidden
         multiple
         ref={inputRef}
-        accept="application/*,text/plain"
-        onChange={documentHandler}
+        accept="application/*,image/png,image/jpeg,image/gif,image/jpg,video/mp4,video/webm"
+        onChange={filesHandler}
       />
-    </li>
+    </>
   );
-}
+};
+
+export default Add;
