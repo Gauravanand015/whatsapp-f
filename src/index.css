@@ -51,9 +51,14 @@
     border: 2px solid #00a884;
   }
 
-  h_view {
+  .h_view {
     height: calc(100vh - 290px);
     padding: 8px 0;
+  }
+
+  .fileThumbnail:hover .removeFileIcon {
+    display: block;
+    transition: ease-in-out 0.3s;
   }
 }
 

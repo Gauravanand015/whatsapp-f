@@ -143,6 +143,12 @@ const chatSlice = createSlice({
     clearFiles: (state, action) => {
       state.files = [];
     },
+    removeFilesFromThumbnail: (state, action) => {
+      let index = action.payload;
+      let files = [...state.files];
+      let fileToRemove = [files[index]];
+      state.files = files.filter((file) => !fileToRemove.includes(file));
+    },
   },
   extraReducers(builder) {
     builder
@@ -204,6 +210,11 @@ const chatSlice = createSlice({
   },
 });
 
-export const { setActiveConversation, updateMessage, addFiles, clearFiles } =
-  chatSlice.actions;
+export const {
+  setActiveConversation,
+  updateMessage,
+  addFiles,
+  clearFiles,
+  removeFilesFromThumbnail,
+} = chatSlice.actions;
 export const chatReducer = chatSlice.reducer;
