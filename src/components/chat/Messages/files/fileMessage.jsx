@@ -1,7 +1,11 @@
 import moment from "moment/moment";
-import { TriangleIcon } from "../../../svg";
+import { TriangleIcon } from "../../../../svg";
+import FileImageAndVideo from "./fileImageAndVideo";
+import OtherFiles from "./otherFiles";
 
-function Message({ message, me }) {
+function FileMessage({ fileMessage, message, me }) {
+  const { file, type } = fileMessage;
+
   return (
     <div
       className={`w-full flex mt-2 space-x-3 max-w-xs ${
@@ -21,13 +25,17 @@ function Message({ message, me }) {
           </div>
         )}
         <div
-          className={`relative h-full dark:text-dark_text_1 p-2 rounded-lg
+          className={`relative h-full dark:text-dark_text_1 rounded-lg pr-2 pl-2 pt-1
         ${me ? "bg-green_3" : "dark:bg-dark_bg_2"}
         `}
         >
           {/*Message*/}
-          <p className="float-left h-full text-sm pb-4 pr-8">
-            {message.message}
+          <p className="float-left h-full text-sm pb-1">
+            {fileMessage.type === "image" || fileMessage.type === "video" ? (
+              <FileImageAndVideo url={file.secure_url} type={type} />
+            ) : (
+              <OtherFiles file={file} type={type} />
+            )}
           </p>
           {/*Message Date*/}
           <span className="absolute right-1.5 bottom-1.5 text-xs text-dark_text_5 leading-none">
@@ -45,4 +53,4 @@ function Message({ message, me }) {
   );
 }
 
-export default Message;
+export default FileMessage;

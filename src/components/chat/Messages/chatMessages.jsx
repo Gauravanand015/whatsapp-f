@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import Message from "./Message";
 import { useEffect, useRef } from "react";
 import Typing from "./typing";
+import FileMessage from "./files/fileMessage";
 
 function ChatMessages({ typing }) {
   const { user } = useSelector((state) => state.user);
@@ -17,14 +18,31 @@ function ChatMessages({ typing }) {
       {/* container */}
       <div className="scrollbar overflow_scrollbar overflow-auto py-2 px-[6%]">
         {/* messages */}
-        {/* {console.log("Messages here:", messages)} */}
+
         {messages &&
           messages.map((message) => (
-            <Message
-              message={message}
-              key={message._id}
-              me={user._id === message.sender._id}
-            />
+            <>
+              {/* images,video,file,audio and message  */}
+              {message.files.length > 0
+                ? message.files.map((file) => (
+                    <FileMessage
+                      fileMessage={file}
+                      message={message}
+                      key={message._id}
+                      me={user._id === message.sender._id}
+                    />
+                  ))
+                : null}
+
+              {/* Text message */}
+              {message.message.length > 0 ? (
+                <Message
+                  message={message}
+                  key={message._id}
+                  me={user._id === message.sender._id}
+                />
+              ) : null}
+            </>
           ))}
         {typing === activeConversation._id ? <Typing /> : null}
         <div ref={endRef}></div>
