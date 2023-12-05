@@ -27,6 +27,8 @@ import MuteIcon from "./Mute";
 import NoVideoIcon from "./NoVideo";
 import TriangleIcon from "./triangle";
 import DownloadIcon from "./Download";
+import ValidIcon from "./Valid";
+import AddContactIcon from "./AddContact";
 export {
   CommunityIcon,
   StoryIcon,
@@ -57,4 +59,6 @@ export {
   NoVideoIcon,
   TriangleIcon,
   DownloadIcon,
+  ValidIcon,
+  AddContactIcon,
 };
