@@ -60,7 +60,7 @@ function HandleAndSend({ activeIndex, setActiveIndex, message, socket }) {
                 className="w-full h-full object-cover"
               />
             ) : file.type === "video" ? (
-              <VideoThumbnail videoUrl={file.fileData}></VideoThumbnail> //! while inspect it will appears as a image tag instead of a video tag
+              <VideoThumbnail videoUrl={file.fileData} /> //! while inspect it will appears as a image tag instead of a video tag
             ) : (
               <img
                 src={`../../../../images/files/${file.type}.png`}

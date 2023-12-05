@@ -6,6 +6,12 @@ import WhatsappHome from "../components/chat/Welcome/WhatsappHome";
 import MessageHistoryContainer from "../components/chat/messageHistoryContainer";
 import SocketContext from "../context/Socket.context";
 import { useState } from "react";
+import Call from "../components/chat/call/Call";
+
+const callData = {
+  receivingCall: true,
+  callEnded: false,
+};
 
 const Home = ({ socket }) => {
   const dispatch = useDispatch();
@@ -13,6 +19,9 @@ const Home = ({ socket }) => {
   const { activeConversation } = useSelector((state) => state.chat);
   const [onlineUser, setOnlineUser] = useState([]);
   const [typing, setTyping] = useState(false);
+  const [call, setCall] = useState(callData);
+  const { receivingCall, callEnded } = call;
+  const [callAccepted, setCallAccepted] = useState(false);
 
   useEffect(() => {
     //!join user into the socket.io
@@ -55,17 +64,21 @@ const Home = ({ socket }) => {
   }, [dispatch]);
 
   return (
-    <div className="h-screen dark:bg-dark_bg_1 flex items-center justify-center overflow-hidden">
-      <div className="container flex h-screen py-[19px]">
-        {/* sidebar */}
-        <Sidebar onlineUser={onlineUser} typing={typing} />
-        {activeConversation._id ? (
-          <MessageHistoryContainer onlineUser={onlineUser} typing={typing} />
-        ) : (
-          <WhatsappHome />
-        )}
+    <>
+      <div className="h-screen dark:bg-dark_bg_1 flex items-center justify-center overflow-hidden">
+        <div className="container flex h-screen py-[19px]">
+          {/* sidebar */}
+          <Sidebar onlineUser={onlineUser} typing={typing} />
+          {activeConversation._id ? (
+            <MessageHistoryContainer onlineUser={onlineUser} typing={typing} />
+          ) : (
+            <WhatsappHome />
+          )}
+        </div>
       </div>
-    </div>
+      {/* // call */}
+      <Call call={call} setCall={setCall} callAccepted={callAccepted} />
+    </>
   );
 };
 
