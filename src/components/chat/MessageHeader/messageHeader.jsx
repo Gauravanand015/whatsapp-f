@@ -1,9 +1,14 @@
 import { useSelector } from "react-redux";
-import { DotsIcon, SearchLargeIcon } from "../../../svg";
+import {
+  CallIcon,
+  DotsIcon,
+  SearchLargeIcon,
+  VideoCallIcon,
+} from "../../../svg";
 import { Capitalize } from "../../../utils/string";
 import { checkOnlineUsers } from "../../../utils/chat";
 
-function MessageHeader({ onlineUser }) {
+function MessageHeader({ onlineUser, callUser }) {
   const { activeConversation } = useSelector((state) => state.chat);
   const { name, picture } = activeConversation;
   const { user } = useSelector((state) => state.user);
@@ -35,21 +40,39 @@ function MessageHeader({ onlineUser }) {
         </div>
 
         {/* Right side in header */}
-        <div className="flex items-center gap-x-4">
-          <ul className="flex item-center gap-x-2.5">
-            <li>
+        {/* <div className="flex items-center gap-x-4"> */}
+        <ul className="flex item-center gap-x-2.5">
+          {onlineUser ? (
+            <li
+              onClick={() => {
+                callUser();
+              }}
+            >
               <button className="btn">
-                <SearchLargeIcon className="dark:fill-dark_svg_1" />
+                <VideoCallIcon className="dark:fill-dark_svg_1" />
               </button>
             </li>
+          ) : null}
 
-            <li>
-              <button className="btn">
-                <DotsIcon className="dark:fill-dark_svg_1" />
-              </button>
-            </li>
-          </ul>
-        </div>
+          <li>
+            <button className="btn rotate-180">
+              <CallIcon className="dark:fill-dark_svg_1 w-2" />
+            </button>
+          </li>
+
+          <li>
+            <button className="btn">
+              <SearchLargeIcon className="dark:fill-dark_svg_1" />
+            </button>
+          </li>
+
+          <li>
+            <button className="btn">
+              <DotsIcon className="dark:fill-dark_svg_1" />
+            </button>
+          </li>
+        </ul>
+        {/* </div> */}
       </div>
     </div>
   );
