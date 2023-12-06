@@ -1,16 +1,25 @@
 import { useDispatch, useSelector } from "react-redux";
 import Sidebar from "../components/sidebar/sidebar";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { getConversation, updateMessage } from "../features/chatSlice";
 import WhatsappHome from "../components/chat/Welcome/WhatsappHome";
 import MessageHistoryContainer from "../components/chat/messageHistoryContainer";
 import SocketContext from "../context/Socket.context";
 import { useState } from "react";
 import Call from "../components/chat/call/Call";
+import {
+  getConversationId,
+  getConversationName,
+  getConversationPicture,
+} from "../utils/chat";
+import Peer from "simple-peer";
 
 const callData = {
-  receivingCall: true,
+  socketId: "",
+  receivingCall: false,
   callEnded: false,
+  name: "",
+  picture: "",
 };
 
 const Home = ({ socket }) => {
@@ -20,8 +29,13 @@ const Home = ({ socket }) => {
   const [onlineUser, setOnlineUser] = useState([]);
   const [typing, setTyping] = useState(false);
   const [call, setCall] = useState(callData);
-  const { receivingCall, callEnded } = call;
+  const [stream, setStream] = useState();
+  const { receivingCall, callEnded, socketId } = call;
   const [callAccepted, setCallAccepted] = useState(false);
+  const [show, setShow] = useState(false);
+  const userVideo = useRef();
+  const otherUserVideo = useRef();
+  const connectionRef = useRef();
 
   useEffect(() => {
     //!join user into the socket.io
@@ -63,6 +77,87 @@ const Home = ({ socket }) => {
     };
   }, [dispatch]);
 
+  // video Stream
+  useEffect(() => {
+    setUpMedia();
+    socket.on("setup socket", (id) => {
+      setCall({ ...call, socketId: id });
+    });
+    socket.on("call user", (data) => {
+      setCall({
+        ...call,
+        socketId: data.from,
+        name: data.name,
+        picture: data.picture,
+        signal: data.signal,
+        receivingCall: true,
+      });
+    });
+  }, []);
+
+  // * #################################################################
+
+  // call user function
+  const callUser = () => {
+    enableMedia();
+    setCall({
+      ...call,
+      name: getConversationName(user, activeConversation.users),
+      picture: getConversationPicture(user, activeConversation.users),
+    });
+
+    //! open channel between two window
+    const peer = new Peer({
+      initiator: true,
+      trickle: false,
+      stream: stream,
+    });
+
+    //! letting other users know that someone is calling and send some information of the calling user to other user
+    peer.on("signal", (data) => {
+      socket.emit("call user", {
+        userToCall: getConversationId(user, activeConversation.users),
+        signal: data,
+        from: socketId,
+        name: user.name,
+        picture: user.picture,
+      });
+    });
+
+    peer.on("stream", (stream) => {
+      otherUserVideo.current.srcObject = stream;
+    });
+
+    connectionRef.current = peer;
+  };
+
+  // answer user function
+  // const answerUser = () => {
+  //   enableMedia();
+  //   setCallAccepted(true);
+  // };
+
+  const setUpMedia = () => {
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        setStream(stream);
+      })
+      .catch((error) => {
+        console.error("Error getting media:", error);
+      });
+  };
+
+  const enableMedia = () => {
+    if (userVideo.current) {
+      userVideo.current.srcObject = stream;
+      // Other code related to enabling media
+      setShow(true);
+    } else {
+      console.error("userVideo is null or undefined");
+    }
+  };
+
   return (
     <>
       <div className="h-screen dark:bg-dark_bg_1 flex items-center justify-center overflow-hidden">
@@ -70,14 +165,25 @@ const Home = ({ socket }) => {
           {/* sidebar */}
           <Sidebar onlineUser={onlineUser} typing={typing} />
           {activeConversation._id ? (
-            <MessageHistoryContainer onlineUser={onlineUser} typing={typing} />
+            <MessageHistoryContainer
+              onlineUser={onlineUser}
+              typing={typing}
+              callUser={callUser}
+            />
           ) : (
             <WhatsappHome />
           )}
         </div>
       </div>
       {/* // call */}
-      <Call call={call} setCall={setCall} callAccepted={callAccepted} />
+      <Call
+        call={call}
+        setCall={setCall}
+        callAccepted={callAccepted}
+        userVideo={userVideo}
+        otherUserVideo={otherUserVideo}
+        stream={stream}
+      />
     </>
   );
 };

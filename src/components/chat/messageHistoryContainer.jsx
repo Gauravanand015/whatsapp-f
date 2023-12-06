@@ -6,7 +6,7 @@ import { getConversationMessages } from "../../features/chatSlice";
 import ChatActions from "./Actions/ChatActions";
 import FilePreview from "./Preview/Files/FilePreview";
 
-function MessageHistoryContainer({ onlineUser, typing }) {
+function MessageHistoryContainer({ onlineUser, typing, callUser }) {
   const disPatch = useDispatch();
   const { activeConversation, files } = useSelector((state) => state.chat);
   const { user } = useSelector((state) => state.user);
@@ -26,7 +26,7 @@ function MessageHistoryContainer({ onlineUser, typing }) {
       {/* container */}
       <div>
         {/* chatHeader */}
-        <MessageHeader onlineUser={onlineUser} />
+        <MessageHeader onlineUser={onlineUser} callUser={callUser} />
 
         {files.length > 0 ? (
           <FilePreview />

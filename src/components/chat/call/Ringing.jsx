@@ -2,17 +2,20 @@ import { useState } from "react";
 import { ValidIcon } from "../../../svg";
 import CloseIcon from "../../../svg/Close";
 import { useEffect } from "react";
+import { Capitalize } from "../../../utils/string";
 
 const Ringing = ({ call, setCall }) => {
-  const { receivingCall, callEnded } = call;
+  const { receivingCall, callEnded, name, picture } = call;
   const [timer, setTimer] = useState(0);
+
   let interval;
+
   const handleTimer = () => {
     interval = setInterval(() => {
       setTimer((prev) => prev + 1);
     }, 1000);
   };
-  console.log(timer);
+
   useEffect(() => {
     if (timer <= 5) {
       handleTimer();
@@ -29,13 +32,13 @@ const Ringing = ({ call, setCall }) => {
         {/*Call infos*/}
         <div className="flex items-center gap-x-2">
           <img
-            src={`https://www.google.com/url?sa=i&url=https%3A%2F%2Funsplash.com%2Fs%2Fphotos%2Fimage&psig=AOvVaw0kwBMjztfznY5GFNGrwEml&ust=1701851268382000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCLiAtZHw94IDFQAAAAAdAAAAABAE`}
+            src={picture}
             alt={`caller profile pic`}
             className="w-28 h-28 rounded-full"
           />
           <div>
             <h1 className="dark:text-white">
-              <b>{"Gaurav"}</b>
+              <b>{name ? Capitalize(name) : ""}</b>
             </h1>
             <span className="dark:text-dark_text_2">Whatsapp video...</span>
           </div>

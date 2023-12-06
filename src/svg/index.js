@@ -29,6 +29,10 @@ import TriangleIcon from "./triangle";
 import DownloadIcon from "./Download";
 import ValidIcon from "./Valid";
 import AddContactIcon from "./AddContact";
+import DialIcon from "./Dial";
+import SpeakerIcon from "./Speaker";
+import VideoDialIcon from "./VideoDial";
+import VideoCallIcon from "./VideoCall";
 export {
   CommunityIcon,
   StoryIcon,
@@ -61,4 +65,8 @@ export {
   DownloadIcon,
   ValidIcon,
   AddContactIcon,
+  DialIcon,
+  SpeakerIcon,
+  VideoDialIcon,
+  VideoCallIcon,
 };
