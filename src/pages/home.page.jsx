@@ -99,21 +99,53 @@ const Home = ({ socket }) => {
 
   // call user function
   const callUser = () => {
+    // enableMedia();
+    // setCall({
+    //   ...call,
+    //   name: getConversationName(user, activeConversation.users),
+    //   picture: getConversationPicture(user, activeConversation.users),
+    // });
+
+    // //! open channel between two window
+    // const peer = new Peer({
+    //   initiator: true,
+    //   trickle: false,
+    //   stream: stream,
+    // });
+
+    // //! letting other users know that someone is calling and send some information of the calling user to other user
+    // peer.on("signal", (data) => {
+    //   socket.emit("call user", {
+    //     userToCall: getConversationId(user, activeConversation.users),
+    //     signal: data,
+    //     from: socketId,
+    //     name: user.name,
+    //     picture: user.picture,
+    //   });
+    // });
+
+    // peer.on("stream", (stream) => {
+    //   otherUserVideo.current.srcObject = stream;
+    // });
+
+    // socket.on("call accepted", (signal) => {
+    //   setCallAccepted(true);
+    //   peer.signal(signal);
+    // });
+
+    // connectionRef.current = peer;
+
     enableMedia();
     setCall({
       ...call,
       name: getConversationName(user, activeConversation.users),
       picture: getConversationPicture(user, activeConversation.users),
     });
-
-    //! open channel between two window
     const peer = new Peer({
       initiator: true,
       trickle: false,
       stream: stream,
     });
-
-    //! letting other users know that someone is calling and send some information of the calling user to other user
     peer.on("signal", (data) => {
       socket.emit("call user", {
         userToCall: getConversationId(user, activeConversation.users),
@@ -123,19 +155,34 @@ const Home = ({ socket }) => {
         picture: user.picture,
       });
     });
-
     peer.on("stream", (stream) => {
       otherUserVideo.current.srcObject = stream;
     });
-
+    socket.on("call accepted", (signal) => {
+      setCallAccepted(true);
+      peer.signal(signal);
+    });
     connectionRef.current = peer;
   };
 
   // answer user function
-  // const answerUser = () => {
-  //   enableMedia();
-  //   setCallAccepted(true);
-  // };
+  const answerUser = () => {
+    enableMedia();
+    setCallAccepted(true);
+    const peer = new Peer({
+      initiator: false,
+      trickle: false,
+      stream: stream,
+    });
+    peer.on("signal", (data) => {
+      socket.emit("answer call", { signal: data, to: call.socketId });
+    });
+    peer.on("stream", (stream) => {
+      userVideo.current.srcObject = stream;
+    });
+    peer.signal(call.signal);
+    connectionRef.current = peer;
+  };
 
   const setUpMedia = () => {
     navigator.mediaDevices
@@ -150,11 +197,13 @@ const Home = ({ socket }) => {
 
   const enableMedia = () => {
     if (userVideo.current) {
+      console.log("User video enabled");
       userVideo.current.srcObject = stream;
-      // Other code related to enabling media
-      setShow(true);
+    } else if (otherUserVideo.current) {
+      console.log("OTHER VIDEO CURRENt");
+      otherUserVideo.current.srcObject = stream;
     } else {
-      console.error("userVideo is null or undefined");
+      throw new Error("Error in enabling media");
     }
   };
 
@@ -183,6 +232,7 @@ const Home = ({ socket }) => {
         userVideo={userVideo}
         otherUserVideo={otherUserVideo}
         stream={stream}
+        answerUser={answerUser}
       />
     </>
   );

@@ -83,6 +83,7 @@ const Call = ({
   userVideo,
   otherUserVideo,
   stream,
+  answerUser,
 }) => {
   const { receivingCall, callEnded, name, picture } = call;
   const [showActions, setShowActions] = useState(false);
@@ -108,34 +109,39 @@ const Call = ({
           </div>
           <div>
             {/* Video Streams */}
-            <div>
-              {/* other user video */}
-              <video
-                ref={otherUserVideo}
-                playsInline
-                muted
-                autoPlay
-                className="largeVideoCall"
-              ></video>
-            </div>
-            <div>
-              {/* user video */}
-              <video
-                ref={userVideo}
-                playsInline
-                muted
-                autoPlay
-                className={`smallVideoCall ${
-                  showActions ? "moveVideoCall" : ""
-                }`}
-              ></video>
-            </div>
+            {callAccepted && !callEnded ? (
+              <div>
+                {/* other user video */}
+                {}
+                <video
+                  ref={otherUserVideo}
+                  playsInline
+                  muted
+                  autoPlay
+                  className="largeVideoCall"
+                ></video>
+              </div>
+            ) : null}
+            {stream ? (
+              <div>
+                {/* user video */}
+                <video
+                  ref={userVideo}
+                  playsInline
+                  muted
+                  autoPlay
+                  className={`smallVideoCall ${
+                    showActions ? "moveVideoCall" : ""
+                  }`}
+                ></video>
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
       {/* ringing */}
       {receivingCall && !callAccepted && (
-        <Ringing call={call} setCall={setCall} />
+        <Ringing call={call} setCall={setCall} answerUser={answerUser} />
       )}
     </>
   );

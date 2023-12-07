@@ -4,7 +4,7 @@ import CloseIcon from "../../../svg/Close";
 import { useEffect } from "react";
 import { Capitalize } from "../../../utils/string";
 
-const Ringing = ({ call, setCall }) => {
+const Ringing = ({ call, setCall, answerUser }) => {
   const { receivingCall, callEnded, name, picture } = call;
   const [timer, setTimer] = useState(0);
 
@@ -50,7 +50,7 @@ const Ringing = ({ call, setCall }) => {
               <CloseIcon className="fill-white w-5" />
             </button>
           </li>
-          <li>
+          <li onClick={answerUser}>
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-500">
               <ValidIcon className="fill-white w-6 mt-2" />
             </button>
